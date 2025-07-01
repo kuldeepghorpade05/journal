@@ -1,0 +1,92 @@
+Thanks for sharing your full `script.js`. You're currently using `localStorage` to store and retrieve notes — which works offline but doesn’t persist across devices or sessions.
+
+---
+
+### 🛠 To switch this to use your **Spring Boot backend**, modify your script in 3 parts:
+
+---
+
+## ✅ 1. Replace `localStorage` → with `fetch()` to GET notes from API
+
+```javascript
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('http://localhost:8080/api/notes')
+    .then(res => res.json())
+    .then(notes => {
+      notes.forEach(note => addNewNote(note.content, note.id));
+    });
+});
+```
+
+---
+
+## ✅ 2. Replace `updateNote()` → with PUT request to backend
+
+```javascript
+const updateNote = (id, content) => {
+  if (!id || content.trim() === "") return;
+
+  fetch(`http://localhost:8080/api/notes/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content })
+  });
+}
+```
+
+---
+
+## ✅ 3. Modify `addNewNote()` to support backend (POST + DELETE)
+
+Update the method signature:
+
+```javascript
+const addNewNote = (txt = '', id = null) => {
+```
+
+🔁 Replace `updateNote()` call with:
+
+```javascript
+textArea.addEventListener('change', (event) => {
+    const value = event.target.value;
+    noteTxt.innerHTML = value;
+    if (id) {
+        updateNote(id, value);
+    }
+});
+```
+
+🆕 Replace `addBtn` click to do a **POST**:
+
+```javascript
+addBtn.addEventListener('click', () => {
+  const content = prompt("Enter your note:");
+  if (!content) return;
+
+  fetch('http://localhost:8080/api/notes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content })
+  })
+    .then(res => res.json())
+    .then(newNote => addNewNote(newNote.content, newNote.id));
+});
+```
+
+🗑 Replace delete logic with DELETE request:
+
+```javascript
+delBtn.addEventListener('click', () => {
+  note.classList.add('animate-ping', 'opacity-30');
+  setTimeout(() => {
+    note.remove();
+    if (id) {
+      fetch(`http://localhost:8080/api/notes/${id}`, {
+        method: 'DELETE'
+      });
+    }
+  }, 200);
+});
+```
+
+---

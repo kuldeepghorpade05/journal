@@ -1,0 +1,55 @@
+| Code    | Meaning               | Use Case Example                        |
+| ------- | --------------------- | --------------------------------------- |
+| **200** | OK                    | ✅ Request succeeded (GET, PUT, DELETE)  |
+| **201** | Created               | ✅ New resource created (POST)           |
+| **204** | No Content            | ✅ Success but no data returned (DELETE) |
+| **400** | Bad Request           | ❌ Invalid input from client             |
+| **401** | Unauthorized          | ❌ Missing or invalid auth credentials   |
+| **403** | Forbidden             | ❌ Authenticated but access denied       |
+| **404** | Not Found             | ❌ Resource not found                    |
+| **409** | Conflict              | ❌ Duplicate or conflicting request      |
+| **500** | Internal Server Error | ❌ Server-side failure                   |
+
+
+
+### 🔧 Backend API Expectations
+
+Your Spring Boot backend should expose:
+
+* `GET /api/notes` → returns all notes as JSON
+* `POST /api/notes` → accepts `{ content: "" }`
+* `PUT /api/notes/{id}` → update a note
+* `DELETE /api/notes/{id}` → delete a note
+
+--------------------------------------------------------------------------------------
+flow ---> [controller] ---> [service] ---> [repository]
+
+com.kuldeep.projectname
+├── controller         ← C (Controller)
+├── service            ← Service layer (used by C)
+├── repository         ← DB access layer (used by S)
+├── entity             ← M (Model - DB mapping)
+├── dto (optional)     ← also part of M (API data model)
+├── config (optional)  ← extra settings
+└── ProjectApplication.java
+
+
+
+| Feature        | Description                             |
+| -------------- | --------------------------------------- |
+| **JPA**        | Java API for interacting with databases |
+| **Entity**     | Java class mapped to DB table           |
+| **Repository** | Interface to perform DB operations      |
+| **Hibernate**  | Most used JPA implementation            |
+
+
+
+
+| Package      | Responsibility                         |
+| ------------ | -------------------------------------- |
+| `controller` | Handle HTTP requests (GET/POST/etc.)   |
+| `entity`     | Map to DB tables (ORM)                 |
+| `repository` | Perform DB operations (via JPA)        |
+| `service`    | Business logic (processing, decisions) |
+| `dto`        | Request/response data only             |
+| `config`     | Custom configuration settings          |
